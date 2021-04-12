@@ -1,0 +1,123 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+
+using namespace std;
+
+class Student {
+    public:
+        string studentFirstName;
+        string studentLastName;
+        float studentGrades[4];
+        float studentFinalGrade;
+        float averageGrade;
+        char gradeLetter;
+
+        void calculateAverageGrade(){
+            float average;
+            float total=0;
+            float grandtotal = 0;
+            for(int i=0; i<4; i++){
+                total = total + studentGrades[i];
+            }
+            grandtotal = total + (studentFinalGrade*1);
+            average = grandtotal/5;
+            averageGrade = average;
+        };
+
+        void defineGradeLetter(){
+            char letter;
+            if(averageGrade >=90){
+                gradeLetter = 'A';
+            }
+            else if((averageGrade >=80) && (averageGrade <90)){
+                gradeLetter = 'B';
+            }
+            else if((averageGrade >=70) && (averageGrade <80)){
+                gradeLetter = 'C';
+            }
+            else if((averageGrade >=60) && (averageGrade <70)){
+                gradeLetter = 'D';
+            }
+            else if((averageGrade >=50) && (averageGrade <60)){
+                gradeLetter = 'F';
+            }
+
+        };
+};
+
+int main()
+{
+    string fileName;
+    ifstream readFile;
+    ofstream writeFile;
+    string currentLine;
+
+    int numberofstudents = 0;
+    float teststotal[5];
+    float highestgrade=0;
+    float testsaverage[5];
+
+    cout << "Enter File Name: ";
+    cin >> fileName;
+   
+    readFile.open(fileName);
+
+    writeFile.open("GradeReport.txt");
+
+    writeFile << "FIRST" << "\t\t" << "LAST" << "\t\t" << "TEST1" << "\t\t" << "TEST2" << "\t\t" << "TEST3" << "\t\t" << "TEST4" << "\t\t" << "FINAL" << "\t\t" << "Average" << "Grade" << endl;
+
+
+    while (readFile){
+        Student student;
+        numberofstudents++;
+        readFile >> student.studentFirstName;
+        readFile >> student.studentLastName;
+        for(int i=0; i<4; i++){
+            readFile >> student.studentGrades[i];
+            teststotal[i] = teststotal[i] + student.studentGrades[i];
+            if(student.studentGrades[i] > highestgrade){
+                highestgrade = student.studentGrades[i];
+            }
+        }
+        readFile >> student.studentFinalGrade;
+        teststotal[4] = teststotal[4] + student.studentFinalGrade;
+        if(student.studentFinalGrade > highestgrade){
+            highestgrade = student.studentFinalGrade;
+        }
+
+        student.calculateAverageGrade();
+        student.defineGradeLetter();
+
+        writeFile << student.studentFirstName << "\t\t";
+        writeFile << student.studentLastName << "\t\t";
+        for(int j=0; j<4; j++){
+            writeFile << student.studentGrades[j] << "\t\t";
+        }
+        writeFile << student.studentFinalGrade << "\t\t";
+        writeFile << student.averageGrade << "\t\t";
+        writeFile << student.gradeLetter << "\t\t" << endl;
+
+        cout << student.studentFirstName << "\t\t";
+        cout << student.studentLastName << "\t\t";
+        for(int j=0; j<4; j++){
+            cout << student.studentGrades[j] << "\t\t";
+        }
+        cout << student.studentFinalGrade << "\t\t";
+        cout << student.studentFinalGrade << "\t\t";
+        cout << student.gradeLetter << "\t\t" << endl;
+       
+    }
+
+    for(int k=0; k < 4; k++){
+        cout << "Test " << k+1 << " Average: " << "\t" << (teststotal[k]/numberofstudents) << endl;
+        writeFile << "Test " << k+1 << " Average: " << "\t" << (teststotal[k]/numberofstudents) << endl;
+    }
+
+    cout << "Final Average" << "\t" << (teststotal[4]/numberofstudents) << endl;
+    writeFile << "Final Average" << "\t" << (teststotal[4]/numberofstudents) << endl;
+
+    cout << "Highest Scored Grade:" << "\t" << highestgrade << endl;
+
+
+}
